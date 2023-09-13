@@ -50,6 +50,7 @@ h5{
 .demonstraçao{
     margin: auto;
     display: block;
+    width: 300px;
 }
 .demonstraçao:hover{
     cursor: zoom-in;
