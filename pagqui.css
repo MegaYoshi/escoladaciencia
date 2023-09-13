@@ -35,12 +35,12 @@ div{
     background-color: white;
     padding-top: 50px;
 }
+h4{
+    text-align: center;
+}
 h5{
     padding-left: 30px;
     padding-bottom: 70px;
-}
-h4{
-    text-align: center;
 }
 .image01{
     margin: auto;
