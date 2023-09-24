@@ -1,34 +1,37 @@
-from chempy import balance_stoichiometry
+from sympy import symbols, Eq, solve
 
-def balancear_equacao_quimica(equacao_quimica):
-    # Divide a equação nos lados esquerdo e direito
-    lado_esquerdo, lado_direito = equacao_quimica.split("=")
+def balance_chemical_equation(reactants, products):
+    # Obter os símbolos para as variáveis
+    variables = symbols(' '.join(set(''.join(reactants + products))))
 
-    # Remove espaços em branco
-    lado_esquerdo = lado_esquerdo.strip()
-    lado_direito = lado_direito.strip()
+    # Inicializar os coeficientes com 1
+    coefficients = {v: 1 for v in variables}
 
-    # Realiza o balanceamento
-    reagentes, produtos = balance_stoichiometry({lado_esquerdo}, {lado_direito})
+    # Criar as equações para o balanceamento
+    equations = []
+    for r in reactants:
+        equation = sum(coefficients[s] for s in r)
+        equations.append(Eq(equation, 0))
 
-    return reagentes, produtos
+    for p in products:
+        equation = sum(coefficients[s] for s in p)
+        equations.append(Eq(equation, 0))
 
-if __name__ == "__main__":
-    print("Bem-vindo ao balanceador de equações químicas!")
-    
-    while True:
-        equacao_quimica = input("Digite a equação química (ou 'q' para sair): ")
+    # Resolver o sistema de equações
+    solutions = solve(equations, dict=True)
 
-        if equacao_quimica.lower() == 'q':
-            break
+    # Obter os coeficientes
+    coefficients = {v: solutions[0][v] for v in variables}
 
-        # Realiza o balanceamento
-        reagentes, produtos = balancear_equacao_quimica(equacao_quimica)
+    return coefficients
 
-        print("Reagentes balanceados:")
-        for elemento, coeficiente in reagentes.items():
-            print(f"{elemento}: {coeficiente}")
+# Equação química: CH4 + O2 -> CO2 + H2O
+reactants = ['CH4', 'O2']
+products = ['CO2', 'H2O']
 
-        print("Produtos balanceados:")
-        for elemento, coeficiente in produtos.items():
-            print(f"{elemento}: {coeficiente}")
+coefficients = balance_chemical_equation(reactants, products)
+
+# Mostrar os coeficientes
+print('Coeficientes balanceados:')
+for symbol, coefficient in coefficients.items():
+    print(f'{symbol}: {coefficient}')
